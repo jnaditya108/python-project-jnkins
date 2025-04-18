@@ -22,7 +22,7 @@ pipeline {
 
         stage('Package App') {
             steps {
-                bat 'zip -r app.zip .'
+                powershell 'Compress-Archive -Path * -DestinationPath app.zip'
             }
         }
 
