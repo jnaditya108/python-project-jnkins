@@ -21,7 +21,7 @@
 
         stage('Package App') {
             steps {
-                powershell 'Compress-Archive -Path * -DestinationPath app.zip'
+                powershell 'Compress-Archive -Path * -DestinationPath app.zip -Force'
             }
         }
 
