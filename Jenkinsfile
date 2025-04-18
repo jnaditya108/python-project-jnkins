@@ -1,4 +1,4 @@
-pipeline {
+   pipeline {
     agent any
 
     environment {
@@ -14,8 +14,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'py -m venv venv'  // Full path to python
-                bat 'venv\\Scripts\\activate'  // Activate the virtual environment
+                bat 'py -m venv venv'                          // Create virtual environment
                 bat 'venv\\Scripts\\pip install -r requirements.txt'  // Install dependencies
             }
         }
@@ -28,23 +27,27 @@ pipeline {
 
         stage('Deploy to Azure') {
             steps {
-                withCredentials([azureServicePrincipal(credentialsId: 'azure-service-principal')]) {
+                withCredentials([
+                    string(credentialsId: 'azure-client-id', variable: 'AZURE_CLIENT_ID'),
+                    string(credentialsId: 'azure-client-secret', variable: 'AZURE_CLIENT_SECRET'),
+                    string(credentialsId: 'azure-tenant-id', variable: 'AZURE_TENANT_ID')
+                ]) {
                     script {
-                        bat '''
-                            az login --service-principal \
-                                --username "$AZURE_CLIENT_ID" \
-                                --password "$AZURE_CLIENT_SECRET" \
-                                --tenant "$AZURE_TENANT_ID"
+                        bat """
+                        az login --service-principal ^
+                            --username "%AZURE_CLIENT_ID%" ^
+                            --password "%AZURE_CLIENT_SECRET%" ^
+                            --tenant "%AZURE_TENANT_ID%"
 
-                            az account set --subscription "$AZURE_SUBSCRIPTION_ID"
+                        az account set --subscription "%AZURE_SUBSCRIPTION_ID%"
 
-                            az webapp up \
-                                --name myPythonApp \
-                                --resource-group myResourceGroup \
-                                --runtime "PYTHON:3.9" \
-                                --src-path . \
-                                --location "East US"
-                        '''
+                        az webapp up ^
+                            --name myPythonApp ^
+                            --resource-group myResourceGroup ^
+                            --runtime "PYTHON:3.9" ^
+                            --src-path . ^
+                            --location "East US"
+                        """
                     }
                 }
             }
