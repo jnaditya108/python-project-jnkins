@@ -14,6 +14,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
+                bat 'pip --version'
                 bat 'pip install -r requirements.txt'
             }
         }
