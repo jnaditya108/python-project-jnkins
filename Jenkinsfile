@@ -14,8 +14,8 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'python -m venv venv'                  // Create virtual environment
-                bat 'venv\\Scripts\\activate'              // Activate the virtual environment
+                bat '"C:\\Users\\nitin\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe" -m venv venv'  // Full path to python
+                bat 'venv\\Scripts\\activate'  // Activate the virtual environment
                 bat 'venv\\Scripts\\pip install -r requirements.txt'  // Install dependencies
             }
         }
